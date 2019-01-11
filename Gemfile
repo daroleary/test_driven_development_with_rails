@@ -26,6 +26,7 @@ group :development, :test do
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'spring-commands-rspec'
   gem 'spring-commands-cucumber'
+  gem 'rails-controller-testing'
   gem 'rspec-rails'
   gem 'factory_girl_rails'
 end
