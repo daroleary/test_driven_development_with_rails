@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe AchievementsController do
 
-  describe "guest user" do
+  shared_examples "public access to achievements" do
     describe "GET index" do
       it "renders :index template" do
         get :index
@@ -30,6 +30,11 @@ describe AchievementsController do
         expect(assigns(:achievement)).to eq(achievement)
       end
     end
+  end
+
+  describe "guest user" do
+
+    it_behaves_like "public access to achievements"
 
     describe "GET new" do
       it "redirects to login page" do
@@ -158,29 +163,7 @@ describe AchievementsController do
     context "is the owner of the achievement" do
       let(:achievement) { FactoryGirl.create(:public_achievement, user: user) }
 
-      describe "GET show" do
-        it "renders :show template" do
-          get :show, params: {id: achievement}
-          expect(response).to render_template(:show)
-        end
-
-        it "assigns requested achievement to @achievement" do
-          get :show, params: {id: achievement}
-          expect(assigns(:achievement)).to eq(achievement)
-        end
-      end
-
-      describe "GET edit" do
-        let(:achievement) { FactoryGirl.create(:public_achievement) }
-        it "renders :edit template" do
-          get :edit, params: {id: achievement}
-        end
-
-        it "assigns the requested achievement to template" do
-          get :edit, params: {id: achievement}
-          expect(assigns(:achievement)).to eq(achievement)
-        end
-      end
+      it_behaves_like "public access to achievements"
 
       describe "PUT update" do
         context "valid data" do
