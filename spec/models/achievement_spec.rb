@@ -1,27 +1,17 @@
 require 'rails_helper'
+require 'shoulda/matchers'
 
 RSpec.describe Achievement, type: :model do
   describe "validations" do
-    it "requires title" do
-      achievement = Achievement.new(title: '')
-      achievement.valid?
-      expect(achievement.errors[:title]).to include("can't be blank")
-    end
+    it { should validate_presence_of(:title) }
+    it { should validate_uniqueness_of(:title).scoped_to(:user_id).with_message("you can't have two achievements with the same title") }
+    it { should validate_presence_of(:user) }
+    it { should belong_to(:user) }
 
-    it "requires title to be unique for one user" do
-      user = FactoryGirl.create(:user)
-      first_achievement = FactoryGirl.create(:public_achievement, title: 'First Achievement', user: user)
-      new_achievement = Achievement.new(title: 'First Achievement', user: user)
-      expect(new_achievement.valid?).to be_falsey
-    end
-
-    it "allows different users to have achievements with the same title" do
-      user1 = FactoryGirl.create(:user)
-      user2 = FactoryGirl.create(:user)
-
-      first_achievement = FactoryGirl.create(:public_achievement, title: 'First Achievement', user: user1)
-      second_achievement = Achievement.new(title: 'First Achievement', user: user2)
-      expect(second_achievement.valid?).to be_truthy
+    it 'converts markdown into html' do
+      achievement = Achievement.new(description: 'Awesome **thing** I *actually* did')
+      expect(achievement.description_html).to include('<strong>thing</strong>')
+      expect(achievement.description_html).to include('<em>actually</em>')
     end
   end
 end
