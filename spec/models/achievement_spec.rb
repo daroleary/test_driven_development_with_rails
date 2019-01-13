@@ -13,5 +13,20 @@ RSpec.describe Achievement, type: :model do
       expect(achievement.description_html).to include('<strong>thing</strong>')
       expect(achievement.description_html).to include('<em>actually</em>')
     end
+
+    it "only fetches achievements which titles starts from provided letter" do
+      user = FactoryGirl.create(:user)
+      achievement1 = FactoryGirl.create(:public_achievement, title: 'Read a book', user: user)
+      achievement2 = FactoryGirl.create(:public_achievement, title: 'Passed an exam', user: user)
+      expect(Achievement.by_letter("R")).to eq([achievement1])
+    end
+
+    it "sorts achievements by user emails" do
+      albert = FactoryGirl.create(:user, email: "albert@email.com")
+      rob = FactoryGirl.create(:user, email: "rob@email.com")
+      achievement1 = FactoryGirl.create(:public_achievement, title: 'Read a book', user: rob)
+      achievement2 = FactoryGirl.create(:public_achievement, title: 'Rocked it', user: albert)
+      expect(Achievement.by_letter("R")).to eq([achievement2, achievement1])
+    end
   end
 end
