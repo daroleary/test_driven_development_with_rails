@@ -1,5 +1,6 @@
 FactoryGirl.define do
   factory :achievement do
+    association :user, factory: :user
     title "Title"
     description "description"
     featured false
